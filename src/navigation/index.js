@@ -2,47 +2,37 @@ import { createStackNavigator, createMaterialTopTabNavigator, createAppContainer
 import DeckList from '../views/deck/decklist'
 import NewDeck from '../views/deck/newdeck'
 import DeckDetail from '../views/deck/deckdetail'
-import Cards from '../views/deck/deckdetail/cards'
+import Cards from '../views/cards'
 import Home from '../views/home'
-import { purple, white, red } from '../../utils/colors'
+import { purple, white } from '../../utils/colors'
 import { Ionicons } from '@expo/vector-icons'
 
 const TabNavigator = createMaterialTopTabNavigator({
   DeckDetail: {
     screen: DeckDetail,
     navigationOptions: {
-      tabBarIcon: ({ tintColor }) => <Ionicons name='ios-bookmarks' size={30} color={tintColor} />,
-    },
+      headerStyle: {
+        backgroundColor: '#ddd'
+      }
+    }
   },
   Cards: {
     screen: Cards,
     navigationOptions: {
-      tabBarIcon: ({ tintColor }) => <FontAwesome name='plus-square' size={30} color={tintColor} />,
-    },
+      headerStyle: {
+        backgroundColor: '#ddd'
+      }
+    }
   },
-},{
+}, {
   navigationOptions: {
-    title: 'Teste',
+    title: 'Deck',
     headerStyle: {
       backgroundColor: purple
     },
     headerTintColor: white
-  },
-  tabBarOptions: {
-    activeTintColor: purple,
-    style: {
-      height: 56,
-      backgroundColor: '#DDD',
-      shadowColor: 'rgba(0, 0, 0, 0.24)',
-      shadowOffset: {
-        width: 0,
-        height: 3
-      },
-      shadowRadius: 6,
-      shadowOpacity: 1
-    }
-  }}
-)
+  }
+})
 
 export default createAppContainer(createStackNavigator({
   Home: {
@@ -58,7 +48,24 @@ export default createAppContainer(createStackNavigator({
     screen: NewDeck
   },
   DeckDetail: {
-    screen: TabNavigator
+    screen: DeckDetail,
+    navigationOptions: {
+      title: 'Deck',
+      headerStyle: {
+        backgroundColor: purple
+      },
+      headerTintColor: white
+    }
+  },
+  Cards: {
+    screen: Cards,
+    navigationOptions: {
+      title: 'New Card',
+      headerStyle: {
+        backgroundColor: purple
+      },
+      headerTintColor: white
+    }
   }
 },{
   navigationOptions: {

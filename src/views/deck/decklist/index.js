@@ -29,10 +29,12 @@ class DeckList extends Component {
     return (
       <TouchableOpacity 
         style={styles.deck}
-        onPress={() => navigation.navigate('DeckDetail')}>
-        <View >
+        onPress={() => navigation.navigate('DeckDetail', {
+          title: decks[item].title
+        })}>
+        <View style={{alignItems: 'center'}}>
           <Text style={{ fontSize: 20 }}> { decks[item].title } </Text>
-          <Text style={{ fontSize: 14 }}> { decks[item].questions.length } Cards </Text>
+          <Text style={{ fontSize: 14 }}> { decks[item].questions !== undefined ? decks[item].questions.length : 0 } Cards </Text>
         </View>
       </TouchableOpacity>
     )

@@ -13,5 +13,10 @@ export default StyleSheet.create({
     textAlign: 'center',
     fontSize: 30,
     color: white
+  },
+  subtitle: {
+    textAlign: 'center',
+    fontSize: 17,
+    color: '#eee'
   }
 })

@@ -73,7 +73,11 @@ class NewDeck extends Component {
           onChangeText={this.handleInputChange}
         />
 
-        <TouchableOpacity style={styles.button} onPress={this.handleAddDeck}>
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={this.handleAddDeck}
+          disabled={newDeckTitle === ''}
+        >
           <Text style={styles.buttonText}>
             Save
           </Text>

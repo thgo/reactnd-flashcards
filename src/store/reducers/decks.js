@@ -1,6 +1,7 @@
 import {
   RECEIVE_DECKS,
   ADD_CARD,
+  DELETE_DECK,
   ADD_DECK,
 } from '../actions'
 
@@ -20,6 +21,12 @@ export default function decks(state = {}, action) {
       return {
         ...state,
         ...action.deck
+      }
+    case DELETE_DECK:
+      const newState = state
+      delete newState[action.deck.title]
+      return {
+        ...newState
       }
     default:
       return state

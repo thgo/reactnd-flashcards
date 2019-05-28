@@ -3,6 +3,7 @@ import { getDecksAPI } from '../../services/api'
 export const RECEIVE_DECKS = 'RECEIVE_DECKS'
 export const DECK_DETAILS = 'DECK_DETAILS'
 export const ADD_DECK = 'ADD_DECK'
+export const DELETE_DECK = 'DELETE_DECK'
 export const ADD_CARD = 'ADD_CARD'
 
 export function handleInitialData() {
@@ -22,6 +23,13 @@ function receiveDecks(decks) {
 export function addNewDeck(deck) {
   return {
     type: ADD_DECK,
+    deck,
+  }
+}
+
+export function deleteDeck(deck) {
+  return {
+    type: DELETE_DECK,
     deck,
   }
 }

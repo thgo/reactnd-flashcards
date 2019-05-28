@@ -22,3 +22,13 @@ export const getDecksAPI = async () => {
 export const addDeckAPI = async (deck) => {
   return await AsyncStorage.mergeItem(FLASHCARDS_KEY, JSON.stringify(deck))
 }
+
+export const deleteDeckAPI = async (deck) => {
+  return await AsyncStorage.getItem(FLASHCARDS_KEY)
+    .then((results) => {
+      const data = JSON.parse(results)
+      data[deck] = undefined
+      delete data[deck]
+      AsyncStorage.setItem(FLASHCARDS_KEY, JSON.stringify(data))
+    })
+}
