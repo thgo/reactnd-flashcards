@@ -5,6 +5,7 @@ export const DECK_DETAILS = 'DECK_DETAILS'
 export const ADD_DECK = 'ADD_DECK'
 export const DELETE_DECK = 'DELETE_DECK'
 export const ADD_CARD = 'ADD_CARD'
+export const DELETE_CARD = 'DELETE_CARD'
 
 export function handleInitialData() {
   return dispatch => {
@@ -34,10 +35,18 @@ export function deleteDeck(deck) {
   }
 }
 
-// export function handleAddDeck(deckname) {
-//   return dispatch => {
-//     return addDeck(deckname)
-//       .then(deck => dispatch(addNewDeck(deck)))
-//       .catch(err => console.log('Erro no action salvar deck: ', err))
-//   }
-// }
+export function addNewCard(deckTitle, card) {
+  return {
+    type: ADD_CARD,
+    deckTitle,
+    card,
+  }
+}
+
+export function deleteCard(deckTitle, question) {
+  return {
+    type: DELETE_CARD,
+    deckTitle,
+    question,
+  }
+}

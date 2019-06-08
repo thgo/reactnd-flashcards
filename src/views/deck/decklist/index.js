@@ -1,113 +1,62 @@
 import React, { Component } from 'react'
-import { 
-  View, 
-  Text, 
-  FlatList, 
-  StyleSheet, 
-  TouchableOpacity 
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity
 } from 'react-native'
 import { connect } from 'react-redux'
-import { Entypo } from '@expo/vector-icons'
-import { FloatingAction } from 'react-native-floating-action'
 import { withNavigation } from 'react-navigation'
-import { white, purple } from '../../../../utils/colors'
-
-const actions = [{
-  text: 'Add Deck',
-  icon: <Entypo name='documents' size={30} color={white} />,
-  name: 'bt_accessibility',
-  color: purple,
-  position: 1,
-}]
+import getTextCard from '../../../../utils/textCards'
+import EmptyDeck from '../../../components/emptyDeck'
+import styles from './styles'
 
 class DeckList extends Component {
 
   renderItem = ({ item }) => {
-
     const { decks, navigation } = this.props
 
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.deck}
         onPress={() => navigation.navigate('DeckDetail', {
           title: decks[item].title
         })}>
         <View style={{alignItems: 'center'}}>
           <Text style={{ fontSize: 20 }}> { decks[item].title } </Text>
-          <Text style={{ fontSize: 14 }}> { decks[item].questions !== undefined ? decks[item].questions.length : 0 } Cards </Text>
+          <Text style={{ fontSize: 14 }}> { getTextCard(decks[item]) } </Text>
         </View>
       </TouchableOpacity>
     )
+
   }
 
   render () {
+    const { decks } = this.props
 
-    const { navigation, decks } = this.props
+    console.log(decks)
 
     return (
       <View style={styles.container}>
-        {decks !== null 
+        {Object.keys(decks).length !== 0
           ? <FlatList
               data={Object.keys(decks)}
               keyExtractor={item => item}
               renderItem={this.renderItem}
             />
-          : <Text>Nada retornado</Text>
+          : <EmptyDeck />
         }
-
-      <FloatingAction 
-        style={styles.action}
-        //actions={actions}
-        color={purple}
-        showBackground={false}
-        animated={false}
-        onPressMain={() => navigation.navigate('NewDeck')}
-        //onPressItem={() => navigation.navigate('NewDeck')}
-      />
       </View>
     )
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-around'
-  },
-  deck: {
-    backgroundColor: white,
-    borderRadius: 5,
-    height: 100,
-    marginTop: 20,
-    marginRight: 20,
-    marginBottom: 5,
-    marginLeft: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  action: {
-    alignSelf: 'flex-end'
-  }
-})
-
 function mapStateToProps({ decks }) {
-
-  console.log('DECK LIST, ', decks )
-
   return {
     decks
   }
 }
 
-export default withNavigation(
-  connect(mapStateToProps)(DeckList)
+export default connect(mapStateToProps)(
+  withNavigation(DeckList)
 )
-

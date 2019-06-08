@@ -1,19 +1,27 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView
+} from 'react-native'
 import { connect } from 'react-redux'
-import { withNavigation } from 'react-navigation'
+import { withNavigation, NavigationActions } from 'react-navigation'
 import { FloatingAction } from 'react-native-floating-action'
 import { purple, white } from '../../../../utils/colors'
-import { MaterialIcons } from '@expo/vector-icons'
-import Header from '../../header'
+import { MaterialIcons, Ionicons } from '@expo/vector-icons'
 import { deleteDeckAPI } from '../../../services/api'
 import { deleteDeck } from '../../../store/actions'
 import { bindActionCreators } from 'redux'
-import Question from './question'
+import Header from '../../../components/header'
+import Questions from '../../questions'
+import getTextCard from '../../../../utils/textCards'
+import TitleDivider from '../../../components/titleDivider'
+import styles from './styles'
 
 const actions = [
   {
-    text: 'Add Question',
+    text: 'Add Card',
     icon: <MaterialIcons name='library-add' size={25} color={white} />,
     name: 'add_question',
     color: purple,
@@ -30,111 +38,131 @@ const actions = [
 
 class DeckDetail extends Component {
 
-  // static navigationOptions = ({ navigation }) => {
-  //   const title = navigation.getParam('title', 'Deck Title')
-  //   return {
-  //     title,
-  //     navigationOptions: {
-  //       backgroundColor: '#ddd'
-  //     }
-  //   }    
-  // }
+  static navigationOptions = ({ navigation }) => ({
+    headerLeft: () => (
+      <Ionicons
+        name={"ios-close"}
+        onPress={() => {
+          navigation.goBack()
+        }}
+        size={48}
+        color="white"
+        style={{ marginLeft: 16 }}
+      />
+    )
+  })
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: () => (
+        <Ionicons
+          name={'md-arrow-back'}
+          onPress={() => navigation.dispatch(NavigationActions.navigate({
+              routeName: 'Home'
+            })
+          )}
+          color={white}
+          size={25}
+          style={{ marginLeft: 16 }}
+        />
+      )
+    }
+  }
+
+  navigateToQuiz = (title) => {
+    const { navigation } = this.props
+
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({
+        routeName: 'Quiz',
+        params: {
+          title
+        }
+      })],
+    })
+    navigation.dispatch(resetAction)
+  }
 
   handleDelete = () => {
     const { deck, title, navigation, deleteDeck } = this.props
 
     deleteDeckAPI(title)
       .then(deleteDeck(deck))
-    
+
     navigation.goBack()
   }
 
+  handleFloatingAction = (name) => {
+    const { navigation, title } = this.props
+
+    switch (name) {
+      case 'add_question' :
+        navigation.navigate('Cards', {
+          title
+        })
+        return
+      case 'delete_deck' :
+        this.handleDelete()
+        return
+      default:
+        return
+    }
+  }
+
   render () {
-    const { deck, title, navigation } = this.props
+    const { deck, navigation } = this.props
 
     return (
       <View style={{flex: 1}}>
         <ScrollView style={{flex: 1}}>
-          <Header title={`${title}`} subtitle={ `${deck && deck.questions ? deck.questions.length : 0} Cards` } />
+          <Header title={`${deck.title}`} subtitle={ getTextCard(deck) } />
           <View style={styles.container}>
-            
-            <TouchableOpacity 
+
+            <TouchableOpacity
               style={styles.option}
-              onPress={() => {}}>
+              onPress={() => navigation.navigate('Quiz', {
+                title: deck.title
+              })}
+              disabled={deck.questions && deck.questions.length === 0}
+            >
               <View style={{alignItems: 'center'}}>
-                <MaterialIcons name='question-answer' size={30} />
-                <Text style={{ fontSize: 20 }}> Start Quiz! </Text>
+                <MaterialIcons
+                  name='question-answer'
+                  size={40}
+                  color={deck.questions && deck.questions.length > 0 ? '#000' : '#E0E0E0'}
+                />
+                <Text style={{ fontSize: 20 }}> Start Quiz </Text>
               </View>
             </TouchableOpacity>
 
           </View>
 
-          <View style={{flex: 1, flexDirection: 'row', marginTop: 20, alignItems: 'center'}}> 
-            <View style={{backgroundColor: '#ddd', height: 2, flex: 2, alignSelf: 'center'}} /> 
-            <Text style={{ fontSize: 24, color: '#ddd', flex: 1 }}>Cards</Text>
-            <View style={{backgroundColor: '#ddd', height: 2, flex: 2, alignSelf: 'center'}} /> 
-          </View>
-
-          { (deck && deck.questions && deck.questions.length > 0) && 
-            <Question questions={deck.questions} />
+          { deck && deck.questions && deck.questions.length > 0
+            ? <View style={{flex: 1}}>
+                <TitleDivider title='Cards' />
+                <Questions deck={deck} />
+              </View>
+            : <View style={styles.emptyMessage}>
+                <Text style={{fontSize: 18}}> Add questions to start a quiz </Text>
+              </View>
           }
 
         </ScrollView>
 
-        <FloatingAction 
+        <FloatingAction
           style={styles.action}
           actions={actions}
           color={purple}
-          onPressItem={(name) => {
-            switch (name) {
-              case 'add_question' :
-                navigation.navigate('Cards', {
-                  title
-                })
-                return
-              case 'delete_deck' :
-                this.handleDelete()
-                return
-              default:
-                alert('default')
-                return
-            }
-          }}
+          floatingIcon={
+            <Ionicons name='ios-options' size={25} color={white} />
+          }
+          onPressItem={(name) => this.handleFloatingAction(name)}
         />
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'stretch'
-  },
-  option: {
-    backgroundColor: white,
-    borderRadius: 5,
-    height: 100,
-    marginTop: 20,
-    marginRight: 20,
-    marginBottom: 5,
-    marginLeft: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  action: {
-    alignSelf: 'flex-end'
-  }
-})
 
 function mapStateToProps ({ decks }, props) {
   const { navigation } = props

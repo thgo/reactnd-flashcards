@@ -19,9 +19,9 @@ export const getDecksAPI = async () => {
   return JSON.parse(results)
 }
 
-export const addDeckAPI = async (deck) => {
-  return await AsyncStorage.mergeItem(FLASHCARDS_KEY, JSON.stringify(deck))
-}
+export const addDeckAPI = async (deck) => 
+  await AsyncStorage.mergeItem(FLASHCARDS_KEY, JSON.stringify(deck))
+
 
 export const deleteDeckAPI = async (deck) => {
   return await AsyncStorage.getItem(FLASHCARDS_KEY)
@@ -29,6 +29,27 @@ export const deleteDeckAPI = async (deck) => {
       const data = JSON.parse(results)
       data[deck] = undefined
       delete data[deck]
+      AsyncStorage.setItem(FLASHCARDS_KEY, JSON.stringify(data))
+    })
+}
+
+export const addCardAPI = async (deckTitle, card) => {
+  return await AsyncStorage.getItem(FLASHCARDS_KEY)
+    .then( (results) => {
+      const data = JSON.parse(results)
+      let questions = data[deckTitle].questions
+      questions = questions.concat(card)
+      data[deckTitle].questions = questions
+      console.log('After add ', data)
+      AsyncStorage.setItem(FLASHCARDS_KEY, JSON.stringify(data))
+    })
+}
+
+export const deleteCardAPI = async (deckTitle, question) => {
+  return await AsyncStorage.getItem(FLASHCARDS_KEY)
+    .then( (results) => {
+      const data = JSON.parse(results)
+      data[deckTitle].questions = data[deckTitle].questions.filter(item => item.question !== question)
       AsyncStorage.setItem(FLASHCARDS_KEY, JSON.stringify(data))
     })
 }

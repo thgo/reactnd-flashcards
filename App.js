@@ -7,6 +7,7 @@ import middleware from './src/store/middleware'
 import './src/config/StatusBarConfig'
 
 class App extends React.Component {
+
   render() {
     return (
       <Provider store={createStore(reducer, middleware)}>

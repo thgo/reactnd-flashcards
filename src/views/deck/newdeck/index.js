@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { 
-  StyleSheet, 
-  Text, 
-  TextInput, 
-  KeyboardAvoidingView, 
-  TouchableOpacity 
+import {
+  Text,
+  TextInput,
+  KeyboardAvoidingView,
+  TouchableOpacity
 } from 'react-native'
 import { withNavigation } from 'react-navigation'
 import { connect } from 'react-redux'
@@ -12,6 +11,7 @@ import { purple, white } from '../../../../utils/colors'
 import { bindActionCreators } from 'redux'
 import { addNewDeck } from '../../../store/actions'
 import { addDeckAPI } from '../../../services/api'
+import styles from './styles'
 
 class NewDeck extends Component {
 
@@ -28,7 +28,6 @@ class NewDeck extends Component {
   }
 
   handleInputChange = ( input ) => {
-    console.log('Input: ', input)
     this.setState({ newDeckTitle: input })
   }
 
@@ -66,15 +65,15 @@ class NewDeck extends Component {
     return (
       <KeyboardAvoidingView behavior='padding' style={styles.container}>
         <Text style={styles.text}> Deck Title </Text>
-        <TextInput 
+        <TextInput
           style={styles.inputText}
           name='newDeckTitle'
           value={newDeckTitle}
           onChangeText={this.handleInputChange}
         />
 
-        <TouchableOpacity 
-          style={styles.button} 
+        <TouchableOpacity
+          style={styles.button}
           onPress={this.handleAddDeck}
           disabled={newDeckTitle === ''}
         >
@@ -86,39 +85,6 @@ class NewDeck extends Component {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: '600'
-  },
-  inputText: {
-    width: 300,
-    height: 44,
-    padding: 8,
-    borderBottomWidth: 1,
-    borderColor: '#757575',
-    margin: 20
-  },
-  button: {
-    padding: 10,
-    backgroundColor: purple,
-    borderRadius: 5,
-    margin: 20,
-    alignSelf: 'stretch'
-  },
-  buttonText: {
-    textAlign: 'center',
-    color: white,
-    fontSize: 20,
-  }
-})
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({ addNewDeck }, dispatch)
