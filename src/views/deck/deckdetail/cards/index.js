@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
   Text,
   TextInput,
@@ -67,7 +68,7 @@ class Cards extends Component {
         <TouchableOpacity
           style={styles.button}
           onPress={this.handleAddCard}
-          disabled={question === '' || answer === ''}
+          disabled={question.trim() === '' || answer.trim() === ''}
         >
           <Text style={styles.buttonText}>
             Save
@@ -77,6 +78,12 @@ class Cards extends Component {
 
     )
   }
+}
+
+Cards.propTypes = {
+  deck: PropTypes.object.isRequired,
+  addNewCard: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired
 }
 
 function mapStateToProps ({ decks }, props) {

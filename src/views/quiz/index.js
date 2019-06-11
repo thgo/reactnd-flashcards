@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { View, TouchableOpacity } from 'react-native'
 import { withNavigation } from 'react-navigation'
 import { connect } from 'react-redux'
@@ -6,10 +7,6 @@ import Header from '../../components/header'
 import { white } from '../../../utils/colors'
 import { Ionicons } from '@expo/vector-icons'
 import CardFlip from 'react-native-card-flip'
-import {
-  setLocalNotification,
-  clearLocalNotification
-} from '../../../utils/notification'
 import MiddleQuiz from '../../components/middleQuiz'
 import styles from './styles'
 
@@ -46,7 +43,6 @@ class Quiz extends Component {
       correctAnswer: option ? correctAnswer + 1 : correctAnswer
     }, () => {
       if (!deck.questions[idxItem]) {
-        this.setNotification()
         return this.navigateToResult()
       }
       this.card.flip()
@@ -55,9 +51,9 @@ class Quiz extends Component {
 
   navigateToResult = () => {
     const { correctAnswer } = this.state
-    const { deck } = this.props
+    const { deck, navigation } = this.props
 
-    this.props.navigation.navigate('Result', {
+    navigation.navigate('Result', {
       correctAnswer,
       totalQuestions: deck.questions.length,
       quizTitle: deck.title
@@ -71,11 +67,6 @@ class Quiz extends Component {
       idxItem: 1,
       correctAnswer: 0
     })
-  }
-
-  setNotification = async () => {
-    await clearLocalNotification()
-    setLocalNotification()
   }
 
   render() {
@@ -145,6 +136,11 @@ class Quiz extends Component {
       </View>
     )
   }
+}
+
+Quiz.propTypes = {
+  deck: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({ decks }, props) => {

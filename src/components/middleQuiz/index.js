@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { View, Text } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { purple } from '../../../utils/colors'
@@ -20,4 +21,9 @@ export default function MiddleQuiz ({ cardTitle, cardText }) {
       </ScrollView>
     </View>
   )
+}
+
+MiddleQuiz.propTypes = {
+  cardTitle: PropTypes.string.isRequired,
+  cardText: PropTypes.string.isRequired
 }

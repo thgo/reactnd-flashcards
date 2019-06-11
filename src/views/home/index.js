@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { View, StatusBar } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -20,7 +21,7 @@ function FlashcardsStatusBar ({ backgroundColor, ...props }) {
   )
 }
 
-class Home extends React.Component {
+class Home extends Component {
 
   componentDidMount() {
     const { handleInitialData } = this.props
@@ -52,6 +53,11 @@ class Home extends React.Component {
       </View>
     )
   }
+}
+
+Home.propTypes = {
+  handleInitialData: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired
 }
 
 function mapDispatchToProps(dispatch) {

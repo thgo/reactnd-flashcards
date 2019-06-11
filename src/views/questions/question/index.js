@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { purple, red } from '../../../../utils/colors'
@@ -43,4 +44,9 @@ export default function Question ({ question, handleDeleteCard }) {
       </View>
     </View>
   )
+}
+
+Question.propTypes = {
+  question: PropTypes.object.isRequired,
+  handleDeleteCard: PropTypes.func.isRequired
 }

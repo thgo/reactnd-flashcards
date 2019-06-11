@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { withNavigation, NavigationActions, StackActions } from 'react-navigation'
+import {
+  setLocalNotification,
+  clearLocalNotification
+} from '../../../../utils/notification'
 import { white } from '../../../../utils/colors'
 import { Ionicons } from '@expo/vector-icons'
 import styles from './styles'
@@ -22,6 +27,19 @@ class Result extends Component {
         />
       )
     }
+  }
+
+  /**
+   * Ao finalizar um quiz, limpa as notificações programadas
+   * e insere outra programação, para o dia seguinte.
+   */
+  componentDidMount() {
+    this.setNotification()
+  }
+
+  setNotification = async () => {
+    await clearLocalNotification()
+    setLocalNotification()
   }
 
   backToDeck = () => {
@@ -87,6 +105,10 @@ class Result extends Component {
       </View>
     )
   }
+}
+
+Result.propTypes = {
+  navigation: PropTypes.object.isRequired
 }
 
 export default withNavigation(Result)

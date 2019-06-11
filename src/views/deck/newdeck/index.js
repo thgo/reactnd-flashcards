@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
   Text,
   TextInput,
@@ -7,21 +8,12 @@ import {
 } from 'react-native'
 import { withNavigation } from 'react-navigation'
 import { connect } from 'react-redux'
-import { purple, white } from '../../../../utils/colors'
 import { bindActionCreators } from 'redux'
 import { addNewDeck } from '../../../store/actions'
 import { addDeckAPI } from '../../../services/api'
 import styles from './styles'
 
 class NewDeck extends Component {
-
-  static navigationOptions = {
-    title: 'Create new deck',
-    headerStyle: {
-      backgroundColor: purple
-    },
-    headerTintColor: white
-  }
 
   state = {
     newDeckTitle: ''
@@ -33,7 +25,7 @@ class NewDeck extends Component {
 
   handleAddDeck = () => {
 
-    const { addNewDeck } = this.props
+    const { addNewDeck, navigation } = this.props
     const { newDeckTitle } = this.state
 
     const deck = this.getNewDeckObject(newDeckTitle)
@@ -46,9 +38,9 @@ class NewDeck extends Component {
       [newDeckTitle]: deck
     })
 
-    this.props.navigation.navigate(
-      'Home'
-    )
+    navigation.navigate('DeckDetail', {
+      title: newDeckTitle
+    })
   }
 
   getNewDeckObject = (deckname) => {
@@ -75,7 +67,7 @@ class NewDeck extends Component {
         <TouchableOpacity
           style={styles.button}
           onPress={this.handleAddDeck}
-          disabled={newDeckTitle === ''}
+          disabled={newDeckTitle.trim() === ''}
         >
           <Text style={styles.buttonText}>
             Save
@@ -84,6 +76,11 @@ class NewDeck extends Component {
       </KeyboardAvoidingView>
     )
   }
+}
+
+NewDeck.propTypes = {
+  addNewDeck: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired
 }
 
 function mapDispatchToProps(dispatch) {

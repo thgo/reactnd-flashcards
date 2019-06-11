@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { View } from 'react-native'
 import { connect } from 'react-redux'
 import { deleteCardAPI } from '../../services/api'
@@ -7,28 +8,22 @@ import { bindActionCreators } from 'redux'
 import Question from './question'
 import styles from './styles'
 
-class Questions extends Component {
+function Questions ({ deck, deleteCard }) {
 
   handleDeleteCard = (question) => {
-    const { deck, deleteCard } = this.props
-
     deleteCard(deck.title, question.question)
     deleteCardAPI(deck.title, question.question)
   }
 
-  render () {
-    const { deck } = this.props
-
-    return (
-      <View style={{flex: 1}}>
-      { deck.questions.map( (question, index) => (
+  return (
+    <View style={{flex: 1}}>
+      { deck.questions.map((question, index) => (
         <View style={styles.question} key={index}>
           <Question question={question} handleDeleteCard={this.handleDeleteCard} />
         </View>
       ))}
-      </View>
-    )
-  }
+    </View>
+  )
 }
 
 function mapStateToProps (state, props) {
@@ -36,6 +31,11 @@ function mapStateToProps (state, props) {
   return {
     deck
   }
+}
+
+Questions.propTypes = {
+  deck: PropTypes.object.isRequired,
+  deleteCard: PropTypes.func.isRequired
 }
 
 mapDispatchToProps = dispatch =>

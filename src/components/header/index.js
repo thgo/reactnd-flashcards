@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text } from 'react-native'
+import PropTypes from 'prop-types'
 import styles from './styles'
 
 export default function Header ({ title, subtitle, fontSize = 30 }) {
@@ -15,4 +16,10 @@ export default function Header ({ title, subtitle, fontSize = 30 }) {
         }
     </View>
   )
+}
+
+Header.propTypes = {
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string,
+  fontSize: PropTypes.number
 }

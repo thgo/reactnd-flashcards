@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import {
   View,
   Text,
@@ -11,11 +12,9 @@ import getTextCard from '../../../../utils/textCards'
 import EmptyDeck from '../../../components/emptyDeck'
 import styles from './styles'
 
-class DeckList extends Component {
+function DeckList ({ decks, navigation }) {
 
   renderItem = ({ item }) => {
-    const { decks, navigation } = this.props
-
     return (
       <TouchableOpacity
         style={styles.deck}
@@ -31,24 +30,23 @@ class DeckList extends Component {
 
   }
 
-  render () {
-    const { decks } = this.props
+  return (
+    <View style={styles.container}>
+      {Object.keys(decks).length !== 0
+        ? <FlatList
+            data={Object.keys(decks)}
+            keyExtractor={item => item}
+            renderItem={renderItem}
+          />
+        : <EmptyDeck />
+      }
+    </View>
+  )
+}
 
-    console.log(decks)
-
-    return (
-      <View style={styles.container}>
-        {Object.keys(decks).length !== 0
-          ? <FlatList
-              data={Object.keys(decks)}
-              keyExtractor={item => item}
-              renderItem={this.renderItem}
-            />
-          : <EmptyDeck />
-        }
-      </View>
-    )
-  }
+DeckList.propTypes = {
+  decks: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired
 }
 
 function mapStateToProps({ decks }) {

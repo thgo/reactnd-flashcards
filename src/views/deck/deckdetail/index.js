@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import {
   View,
   Text,
@@ -36,42 +37,9 @@ const actions = [
   }
 ]
 
-class DeckDetail extends Component {
-
-  static navigationOptions = ({ navigation }) => ({
-    headerLeft: () => (
-      <Ionicons
-        name={"ios-close"}
-        onPress={() => {
-          navigation.goBack()
-        }}
-        size={48}
-        color="white"
-        style={{ marginLeft: 16 }}
-      />
-    )
-  })
-
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerLeft: () => (
-        <Ionicons
-          name={'md-arrow-back'}
-          onPress={() => navigation.dispatch(NavigationActions.navigate({
-              routeName: 'Home'
-            })
-          )}
-          color={white}
-          size={25}
-          style={{ marginLeft: 16 }}
-        />
-      )
-    }
-  }
+function DeckDetail ({ deck, title, navigation, deleteDeck }) {
 
   navigateToQuiz = (title) => {
-    const { navigation } = this.props
-
     const resetAction = StackActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({
@@ -85,8 +53,6 @@ class DeckDetail extends Component {
   }
 
   handleDelete = () => {
-    const { deck, title, navigation, deleteDeck } = this.props
-
     deleteDeckAPI(title)
       .then(deleteDeck(deck))
 
@@ -94,8 +60,6 @@ class DeckDetail extends Component {
   }
 
   handleFloatingAction = (name) => {
-    const { navigation, title } = this.props
-
     switch (name) {
       case 'add_question' :
         navigation.navigate('Cards', {
@@ -110,58 +74,61 @@ class DeckDetail extends Component {
     }
   }
 
-  render () {
-    const { deck, navigation } = this.props
+  return (
+    <View style={{flex: 1}}>
+      <ScrollView style={{flex: 1}}>
+        <Header title={`${deck.title}`} subtitle={ getTextCard(deck) } />
+        <View style={styles.container}>
 
-    return (
-      <View style={{flex: 1}}>
-        <ScrollView style={{flex: 1}}>
-          <Header title={`${deck.title}`} subtitle={ getTextCard(deck) } />
-          <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => navigation.navigate('Quiz', {
+              title: deck.title
+            })}
+            disabled={deck.questions && deck.questions.length === 0}
+          >
+            <View style={{alignItems: 'center'}}>
+              <MaterialIcons
+                name='question-answer'
+                size={40}
+                color={deck.questions && deck.questions.length > 0 ? '#000' : '#E0E0E0'}
+              />
+              <Text style={{ fontSize: 20 }}> Start Quiz </Text>
+            </View>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.option}
-              onPress={() => navigation.navigate('Quiz', {
-                title: deck.title
-              })}
-              disabled={deck.questions && deck.questions.length === 0}
-            >
-              <View style={{alignItems: 'center'}}>
-                <MaterialIcons
-                  name='question-answer'
-                  size={40}
-                  color={deck.questions && deck.questions.length > 0 ? '#000' : '#E0E0E0'}
-                />
-                <Text style={{ fontSize: 20 }}> Start Quiz </Text>
-              </View>
-            </TouchableOpacity>
+        </View>
 
-          </View>
+        { deck && deck.questions && deck.questions.length > 0
+          ? <View style={{flex: 1}}>
+              <TitleDivider title='Cards' />
+              <Questions deck={deck} />
+            </View>
+          : <View style={styles.emptyMessage}>
+              <Text style={{fontSize: 18}}> Add questions to start a quiz </Text>
+            </View>
+        }
 
-          { deck && deck.questions && deck.questions.length > 0
-            ? <View style={{flex: 1}}>
-                <TitleDivider title='Cards' />
-                <Questions deck={deck} />
-              </View>
-            : <View style={styles.emptyMessage}>
-                <Text style={{fontSize: 18}}> Add questions to start a quiz </Text>
-              </View>
-          }
+      </ScrollView>
 
-        </ScrollView>
+      <FloatingAction
+        style={styles.action}
+        actions={actions}
+        color={purple}
+        floatingIcon={
+          <Ionicons name='ios-options' size={25} color={white} />
+        }
+        onPressItem={(name) => this.handleFloatingAction(name)}
+      />
+    </View>
+  )
+}
 
-        <FloatingAction
-          style={styles.action}
-          actions={actions}
-          color={purple}
-          floatingIcon={
-            <Ionicons name='ios-options' size={25} color={white} />
-          }
-          onPressItem={(name) => this.handleFloatingAction(name)}
-        />
-      </View>
-    )
-  }
+DeckDetail.propTypes = {
+  title: PropTypes.string.isRequired,
+  navigation: PropTypes.object.isRequired,
+  deck: PropTypes.object.isRequired,
+  deleteDeck: PropTypes.func.isRequired
 }
 
 function mapStateToProps ({ decks }, props) {
@@ -171,7 +138,7 @@ function mapStateToProps ({ decks }, props) {
   return {
     title,
     navigation,
-    deck: decks[title] ? decks[title] : []
+    deck: decks[title] || {}
   }
 }
 
@@ -179,4 +146,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({deleteDeck}, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(DeckDetail))
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withNavigation(DeckDetail)
+)
