@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "expo": "34.0.4",
+    "mem": "^5.1.1",
     "prop-types": "^15.7.2",
     "react": "16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
